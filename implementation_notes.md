@@ -1,7 +1,7 @@
 # Code base notes
 
-- Each device have two posible modes, either it's a `STATION` or an `AP`(access point).
-- The orientation of each device defines its function:
+- Each device has two posible modes, either it's a `STATION` or an `AP`(access point).
+- The orientation of each device determines its function:
 
 	| Code  | Orientation |
 	|-------|-------------|
@@ -11,7 +11,7 @@
 	| West  | 3           |
 	| None  | 9           |
 
-- The each esp32 controller ring program has three main parts: `lowlevel`, `internal` and `netif`. Each has their own queue that stores incoming payloads.
+- The each esp32 controller ring program consist of three main parts: `lowlevel`, `internal` and `netif`. Each has their own queue that stores incoming payloads.
 
 ## Structure
 
