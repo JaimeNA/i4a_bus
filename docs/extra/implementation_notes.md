@@ -56,7 +56,6 @@ struct Device {
 
 Similar to an access point, changing its mode. 
 
-
 ## Internal logic
 
 

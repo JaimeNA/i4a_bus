@@ -1,0 +1,142 @@
+<testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.137" timestamp="2025-06-12T07:58:43.419237-03:00" hostname="jasha-desktop"><testcase classname="test_unit_case" name="test_unit_test[Test: add static route]" time="0.064"><error message="failed on setup with &quot;ValueError: Couldn't auto detect chip. Please manually specify with &quot;--port&quot;&quot;">args = ()
+kwargs = {'_fixture_classes_and_options': ClassCliOptions(classes={'app': &lt;class 'pytest_embedded_idf.app.IdfApp'&gt;, 'serial': &lt;...ded_idf.app.IdfApp object at 0x7fc853ce34d0&gt;, 'msg_queue': &lt;pytest_embedded.log.MessageQueue object at 0x7fc853ce2270&gt;}
+_close_or_terminate = &lt;function multi_dut_generator_fixture.&lt;locals&gt;.wrapper.&lt;locals&gt;._close_or_terminate at 0x7fc853a484a0&gt;, res = None
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        def _close_or_terminate(obj):
+            if obj is None:
+                del obj
+                return
+    
+            try:
+                if isinstance(obj, (subprocess.Popen, multiprocessing.process.BaseProcess)):
+                    obj.terminate()
+                    obj.kill()
+                elif isinstance(obj, io.IOBase):
+                    try:
+                        obj.close()
+                    except Exception as e:
+                        logging.debug('file %s closed failed with error: %s', obj, str(e))
+                else:
+                    try:
+                        obj.close()
+                    except AttributeError:
+                        try:
+                            obj.terminate()
+                        except AttributeError:
+                            pass
+                    except Exception as e:
+                        logging.debug('Not properly caught object %s: %s', obj, str(e))
+            except Exception as e:
+                logging.debug('%s: %s', obj, str(e))
+                return  # swallow up all error
+            finally:
+                referrers = gc.get_referrers(obj)
+                for _referrer in referrers:
+                    if isinstance(_referrer, list):
+                        for _i, val in enumerate(_referrer):
+                            if val is obj:
+                                _referrer[_i] = None
+                    elif isinstance(_referrer, dict):
+                        for key, value in _referrer.items():
+                            if value is obj:
+                                _referrer[key] = None
+                del obj
+    
+        if _COUNT == 1:
+            res = None
+            try:
+&gt;               res = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+
+../../../.espressif/python_env/idf5.1_py3.13_env/lib/python3.13/site-packages/pytest_embedded/plugin.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.espressif/python_env/idf5.1_py3.13_env/lib/python3.13/site-packages/pytest_embedded/plugin.py:1137: in serial
+    return serial_gn(**locals())
+           ^^^^^^^^^^^^^^^^^^^^^
+../../../.espressif/python_env/idf5.1_py3.13_env/lib/python3.13/site-packages/pytest_embedded/dut_factory.py:462: in serial_gn
+    return cls(**_drop_none_kwargs(kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.espressif/python_env/idf5.1_py3.13_env/lib/python3.13/site-packages/pytest_embedded_idf/serial.py:42: in __init__
+    super().__init__(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;pytest_embedded_idf.serial.IdfSerial object at 0x7fc853ce3230&gt;, pexpect_proc = &lt;pytest_embedded.log.PexpectProcess object at 0x7fc853ce2f90&gt;
+msg_queue = &lt;pytest_embedded.log.MessageQueue object at 0x7fc853ce2270&gt;, target = 'esp32', beta_target = None, port = None, port_mac = None, baud = 115200, esptool_baud = 921600
+esp_flash_force = False, skip_autoflash = True, erase_all = False
+meta = Meta(logdir='/tmp/pytest-embedded/2025-06-12_10-58-43-434917/test_unit_test[Test: add static route]', port_target_cache={}, port_app_cache={}, logfile_extension='.log')
+ports_to_occupy = (), kwargs = {}, port_filter = '', available_ports = ['/dev/ttyS0', '/dev/ttyS1', '/dev/ttyS10', '/dev/ttyS11', '/dev/ttyS12', '/dev/ttyS13', ...]
+ports = ['/dev/ttyS0', '/dev/ttyS1', '/dev/ttyS10', '/dev/ttyS11', '/dev/ttyS12', '/dev/ttyS13', ...]
+
+    def __init__(
+        self,
+        pexpect_proc: PexpectProcess,
+        msg_queue: MessageQueue,
+        target: Optional[str] = None,
+        beta_target: Optional[str] = None,
+        port: Optional[str] = None,
+        port_mac: Optional[str] = None,
+        baud: int = Serial.DEFAULT_BAUDRATE,
+        esptool_baud: int = ESPTOOL_DEFAULT_BAUDRATE,
+        esp_flash_force: bool = False,
+        skip_autoflash: bool = False,
+        erase_all: bool = False,
+        meta: Optional[Meta] = None,
+        ports_to_occupy: List[str] = (),
+        **kwargs,
+    ) -&gt; None:
+        self._meta = meta
+    
+        esptool_target = beta_target or target or 'auto'
+        if port is None or port.endswith('*'):
+            port_filter = port.strip('*') if port else ''
+            available_ports = [_p for _p in esptool.get_port_list() if port_filter in _p]
+            ports = list(set(available_ports) - set(self.occupied_ports.keys()) - set(ports_to_occupy))
+    
+            # sort to make /dev/ttyS* ports before /dev/ttyUSB* ports
+            # esptool will reverse the list
+            ports.sort()
+            if port_mac:
+                for port in ports:
+                    if _is_port_mac_verified(pexpect_proc, port, port_mac, msg_queue):
+                        ports = [port]
+                        break
+                else:
+                    raise ValueError(f'The specified MAC address {port_mac} cannot be found.')
+    
+            # prioritize the cache recorded target port
+            if esptool_target and self._meta:
+                ports.sort(key=lambda x: self._meta.hit_port_target_cache(x, esptool_target))
+    
+            logging.debug(f'Detecting ports from {", ".join(ports)}')
+        else:
+            if port_mac:
+                if _is_port_mac_verified(pexpect_proc, port, port_mac, msg_queue):
+                    ports = [port]
+                else:
+                    raise ValueError(f'The specified MAC address {port_mac} binds with different port, not with {port}')
+            else:
+                ports = [port]
+    
+        # normal loader
+        if esptool_target not in ['auto', *ESPTOOL_CHIPS]:
+            raise ValueError(
+                f'esptool version {ESPTOOL_VERSION} not support target {esptool_target}\n'
+                f'Supported targets: {ESPTOOL_CHIPS}'
+            )
+    
+        with contextlib.redirect_stdout(msg_queue):
+            self.esp = esptool.get_default_connected_device(
+                ports,
+                port=port,
+                connect_attempts=3,
+                initial_baud=baud,
+                chip=esptool_target,
+            )
+    
+        if not self.esp:
+&gt;           raise ValueError('Couldn\'t auto detect chip. Please manually specify with "--port"')
+E           ValueError: Couldn't auto detect chip. Please manually specify with "--port"
+
+../../../.espressif/python_env/idf5.1_py3.13_env/lib/python3.13/site-packages/pytest_embedded_serial_esp/serial.py:118: ValueError</error></testcase></testsuite></testsuites>
